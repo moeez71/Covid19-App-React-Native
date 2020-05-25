@@ -88,8 +88,9 @@ export default class ABCDE extends React.Component {
           data={this.state.data}
           keyExtractor={ (item, index) => index.toString() }
           ItemSeparatorComponent={this.itemSeparator}
-          renderItem={({ item }) => <Text style={styles.row}
-          onPress={this.GetFlatListItem.bind(this, item.Country)} >{item.Country}</Text>}
+        //   renderItem={({ item }) => <Text style={styles.row}
+        //   onPress={this.GetFlatListItem.bind(this, item.Country)} >{item.Country}</Text>}
+        renderItem={({ item }) => { console.log(item.Country) }}
           style={{ marginTop: 10 }} />
  
       </View>
