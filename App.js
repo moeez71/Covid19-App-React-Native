@@ -1,5 +1,5 @@
 import React, {useState, useEffect}  from 'react';
-import { ActivityIndicator, Alert, FlatList, Text, StyleSheet, View, TextInput, TouchableOpacity, Button} from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Text, StyleSheet, View, TextInput, TouchableOpacity, Button, Image} from 'react-native';
 
 import { DrawerActions } from '@react-navigation/native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,6 +11,12 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Entypo } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+import { FontAwesome5 } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
+
+import Asia from "./Continents/Asia"
 
 
 import ABCDE from './classbased';
@@ -18,28 +24,55 @@ import ABCDEE from './funcbased';
 
 const Tab = createMaterialBottomTabNavigator();
 const Drawer = createDrawerNavigator();
+function compareValues(key, order = 'asc') {
+  return function innerSort(a, b) {
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+      // property doesn't exist on either object
+      return 0;
+    }
+
+    const varA = (typeof a[key] === 'string')
+      ? a[key].toUpperCase() : a[key];
+    const varB = (typeof b[key] === 'string')
+      ? b[key].toUpperCase() : b[key];
+
+    let comparison = 0;
+    if (varA > varB) {
+      comparison = 1;
+    } else if (varA < varB) {
+      comparison = -1;
+    }
+    return (
+      (order === 'desc') ? (comparison * -1) : comparison
+    );
+  };
+}
 
  function MyTabs() {
    return (
     <Tab.Navigator  
      activeColor = '#ffffff'
      inactiveColor = '#ffffff'
-     barStyle = {{backgroundColor: '#696969'}}
-     shifting = {true}>
-       <Tab.Screen name="Asia" component={Cont1} options = {{tabBarIcon: () => 
-         <Entypo name="home" size={24}  />
+     barStyle = {{backgroundColor: '#b0c4de',}}
+     shifting = {false}
+     >
+       <Tab.Screen name="Asia" component={Asia} options = {{tabBarIcon: () => 
+          <Image source={require("./Pictures/asia.png")} style={{width: 40,height: 25}}></Image>,
        }} />
-       <Tab.Screen name="Explore" component={Cont2} options = {{tabBarIcon: () => 
-        <MaterialIcons name="explore" size={24} /> 
+       <Tab.Screen name="Europe" component={Cont2} options = {{tabBarIcon: () => 
+        <Image source={require("./Pictures/europe.png")} style={{width: 40,height: 25}}></Image>
        }} />
-       <Tab.Screen name="Subscriptions" component= {Cont3} options = {{tabBarIcon: () => 
-       <MaterialIcons name="subscriptions" size={24}  /> 
+       <Tab.Screen name="Africa" component= {Cont3} options = {{tabBarIcon: () => 
+         <Image source={require("./Pictures/africa.png")} style={{width: 40,height: 25}}></Image>
        }} />
-       <Tab.Screen name="Inbox"  component = {Cont4} options = {{tabBarIcon: () =>
-       <MaterialIcons name="inbox" size={24}  />
+       <Tab.Screen name="N.America"  component = {Cont4} options = {{tabBarIcon: () =>
+       <Image source={require("./Pictures/north-america-map.png")} style={{width: 40,height: 25}}></Image>
        }}/>
-       <Tab.Screen name="Library"  component = {Cont5} options = {{tabBarIcon: () =>
-       <MaterialIcons name="video-library" size={24}  />
+       <Tab.Screen name="S.America"  component = {Cont5} options = {{tabBarIcon: () =>
+       <Image source={require("./Pictures/south-america-map.png")} style={{width: 40,height: 25}}></Image>
+       }}/>
+       <Tab.Screen name="Australia"  component = {Cont6} options = {{tabBarIcon: () =>
+       <Image source={require("./Pictures/australia.png")} style={{width: 40,height: 25}}></Image>
        }}/>
      </Tab.Navigator>
    );
@@ -48,9 +81,27 @@ const Drawer = createDrawerNavigator();
 function MyDrawer() {
   return (
     <Drawer.Navigator>
-      <Drawer.Screen name="Screen1" component={Screen1} />
-      <Drawer.Screen name="Screen3" component={Screen3} />
-      <Drawer.Screen name="Screen4" component={Screen4} />
+      <Drawer.Screen name="All Countries" component={Screen1} 
+      options= {{drawerIcon: ()=> 
+        <View style= {{paddingLeft: 5}}>
+          <FontAwesome5 name="flag" size={20} color="black" />
+        </View>
+        }}/>
+        
+      <Drawer.Screen name="Global Summary" component={Screen3} 
+         options= {{drawerIcon: ()=> 
+        <View style= {{paddingLeft: 5}}>
+          <Fontisto name="world-o" size={20} color="black" />
+        </View>
+        }}
+      />
+      <Drawer.Screen name="Continent Stats" component={Screen4}
+        options= {{drawerIcon: ()=> 
+        <View style= {{paddingLeft: 5}}>
+          <MaterialCommunityIcons name="earth-box" size={22} color="black" />
+        </View>
+        }}
+         />
     </Drawer.Navigator>
   );
 }
@@ -61,9 +112,13 @@ const N1 = () => {
   return (
   <Stack.Navigator
     screenOptions= {({navigation}) => ({
-      title : "Covid19", 
-      headerLeft: ()=> <Ionicons name="md-menu" size={45} color="red" onPress = {() => navigation.dispatch(DrawerActions.openDrawer())}/>,
-      headerRight: ()=> <MaterialIcons name="search" size={45} color="black"  />
+      title : "Covid-19", 
+      headerTintColor: "black",
+      headerStyle: {backgroundColor: "#b0c4de"},
+      headerLeft: ()=> 
+      <View style= {{paddingLeft:15}}>
+      <Ionicons name="md-menu" size={40} color="red" onPress = {() => navigation.dispatch(DrawerActions.openDrawer())}/>
+      </View>
     })}
   >
         <Stack.Screen name="Home" component={MyDrawer} />
@@ -72,10 +127,13 @@ const N1 = () => {
         name="Screen2" 
         component={Screen2}
         options = {({navigation}) => ({
-          title: "screen2",
-          headerLeft: () => <Ionicons name="md-arrow-round-back" size={24} color="black" 
+          title: "",
+          headerLeft: () =>
+          <View style= {{paddingLeft:15}}>
+           <Ionicons name="md-arrow-round-back" size={24} color="black" 
             onPress ={()=> {navigation.goBack()}}
-          />,
+          />
+          </View>,
           headerRight: false
         })}
         
@@ -88,7 +146,8 @@ const N2 = () => {
   return (
   <Stack2.Navigator>
         <Stack2.Screen name="Asia"
-        component={MyTabs} />
+        component={MyTabs}
+        options = {{headerShown : false}} />
         </Stack2.Navigator>
   )
 }
@@ -165,23 +224,15 @@ const Screen1 = ({navigation}) => {
       return (
         <View
           style={{
-            height: .5,
+            height: 2,
             width: "100%",
-            backgroundColor: "#000",
+            backgroundColor: "#2f4f4f",
           }}
         />
       );
     }
     
   return(
-    // <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
-    //   <Text>Screen1</Text>
-    //   <Button title = "Go to Screen 2"
-    //     onPress = {() => navigation.navigate("Screen2")}
-    //   ></Button>
-    // </View>
-    //<ABCDEE/>
-
           <View>
     {loading === false ?  
         <View style={styles2.MainContainer}>
@@ -191,7 +242,7 @@ const Screen1 = ({navigation}) => {
          onChangeText={(text) => searchData(text)}
          value={text}
          underlineColorAndroid='transparent'
-         placeholder="Search Here" />
+         placeholder="Search Country Here" />
  
         <FlatList
           data={data.sort(compareValues('Country'))}
@@ -214,10 +265,10 @@ const Screen1 = ({navigation}) => {
               </View>
               </TouchableOpacity>
             )}
-          style={{ marginTop: 10 }} />
+          style={{ marginTop: 0 }} />
  
       </View>
-      : <Text>loading</Text>}
+      : <ActivityIndicator/>}
 
       </View>
     );
@@ -232,11 +283,11 @@ const Screen2 = ({navigation, route}) => {
   console.log(slug)
 
   const fetchAPI = ()=> {
-    return fetch('https://api.covid19api.com/live/country/' + slug)
+    return fetch('https://api.covid19api.com/dayone/country/' + slug)
     .then((response) => response.json())
     .then((result) => {
-     console.log(result[0])
-      setItems(result[0])
+     console.log(result)
+      setItems(result)
       setLoading(false)
     }
     )
@@ -251,17 +302,58 @@ const Screen2 = ({navigation, route}) => {
   return(
     <View>
     {loading === false ?  
-     <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
-     <Text>Screen2</Text>
-      <Text>Country  {items.Country}</Text>
-      <Text>Total Confirmed  {items.Confirmed}</Text>
-      <Text>New Deaths  {items.Deaths}</Text>
-      <Text>New Recovered  {items.Recovered}</Text> 
-      <Text>Total Recovered  {items.TotalRecovered}</Text> 
-      <Text>Hello</Text>
+     <View style= {{}}>
+
+     <View style = {{justifyContent: "center", alignItems: "center" , flexDirection: "row",}}>
+     <Text style = {{padding : 10,fontWeight: "bold", fontSize: 22, fontFamily: "serif"}}>{items[0].Country} </Text>
+      </View>
+
+      <View style= {{paddingTop: 30, paddingLeft: 70}}>
+
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> First Case Date: </Text>
+        <Text style= {{color: "red"}}>{items[0].Date}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> First Day Cases Active: </Text>
+        <Text style= {{color: "red"}}>{items[0].Active}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> First Day Cases Confirmed: </Text>
+        <Text style= {{color: "red"}}>{items[0].Confirmed}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> First Day Deaths: </Text>
+        <Text style= {{color: "red"}}>{items[0].Deaths}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> Total Confirmed Cases: </Text>
+        <Text style= {{color: "red"}}>{items[items.length - 1].Confirmed}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> Total Deaths: </Text>
+        <Text style= {{color: "red"}}>{items[items.length - 1].Deaths}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> Active Cases: </Text>
+        <Text style= {{color: "red"}}>{items[items.length - 1].Active}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> Total Recovered: </Text>
+        <Text style= {{color: "green"}}>{items[items.length - 1].Recovered}</Text>
+      </View>
+      </View>
 
      </View>
-: <Text>Loading</Text>
+: <ActivityIndicator/>
       } 
     </View> )
 }
@@ -292,16 +384,49 @@ const Screen3 = () => {
   return( 
     <View>
     {loading === false ?  
-     <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
-      <Text>Screen3</Text>
-      <Text>New Confirmed  {items.NewConfirmed}</Text>
-      <Text>Total Confirmed  {items.TotalConfirmed}</Text>
-      <Text>New Deaths  {items.NewDeaths}</Text>
-      <Text>New Recovered  {items.NewRecovered}</Text>
-      <Text>Total Recovered  {items.TotalRecovered}</Text>
+     <View style = {{}}>
+      <View style = {{justifyContent: "center", alignItems: "center"}}>
+      <Text style = {{padding : 10,fontWeight: "bold", fontSize: 30, fontFamily: "serif"}}>Global Summary</Text>
+      </View>
+
+      <View style = {{paddingTop: 30, paddingLeft: 120}}>
+
+      <View style = {{padding: 4,flexDirection: "row" , justifyContent : "flex-start"}}>
+        <Text style={{fontWeight: "bold", paddingRight:6}}> New Confirmed:  </Text>
+        <Text style= {{color: "red"}}>{items.NewConfirmed}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row"}}>
+        <Text style={{fontWeight: "bold", paddingRight:4}}> Total Confirmed:  </Text>
+        <Text style= {{color: "red"}}>{items.TotalConfirmed}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row"}}>
+        <Text style={{fontWeight: "bold", paddingRight:30}}> New Deaths:  </Text>
+        <Text style= {{color: "red"}}>{items.NewDeaths}</Text>
+      </View>
+
+      
+      <View style = {{padding: 4,flexDirection: "row"}}>
+        <Text style={{fontWeight: "bold", paddingRight:26}}> Total Deaths:  </Text>
+        <Text style= {{color: "red"}}>{items.TotalDeaths}</Text>
+      </View>
+
+      <View style = {{padding: 4,flexDirection: "row"}}>
+        <Text style={{fontWeight: "bold", paddingRight:7}}> New Recovered:  </Text>
+        <Text style= {{color: "green"}}>{items.NewRecovered}</Text>
+      </View>
+
+      
+      <View style = {{padding: 4,flexDirection: "row"}}>
+        <Text style={{fontWeight: "bold", paddingRight:3}}> Total Recovered:  </Text>
+        <Text style= {{color: "green"}}>{items.TotalRecovered}</Text>
+      </View>
+
+      </View>
 
      </View>
-: <Text>Loading</Text>
+: <ActivityIndicator/>
       } 
     </View> )
 }
@@ -317,6 +442,30 @@ const Screen4 = () => {
 const Cont1 = () => {
   const [items, setItems] = useState();
   const [loading , setLoading] = useState(true)
+
+  function compareValues(key, order = 'asc') {
+    return function innerSort(a, b) {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        // property doesn't exist on either object
+        return 0;
+      }
+  
+      const varA = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const varB = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (varA > varB) {
+        comparison = 1;
+      } else if (varA < varB) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+  }
 
   const fetchAPI = ()=> {
     return fetch("https://covid19-update-api.herokuapp.com/api/v1/world/continent/asia")
@@ -337,24 +486,33 @@ const Cont1 = () => {
   
 
   return(
-    <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
+    <View >
 
     {loading === false ?
       <View>
+
+      <View style = {{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+      <Text style = {{fontWeight: "bold", fontSize: 30, fontFamily: "serif", borderRadius: 10, borderColor: "black", borderWidth: 2, padding:5, backgroundColor: "grey"}}>Asia</Text>
+      </View>
+
+      <View style= {{padding: 5, backgroundColor: '#ffff'}}>
+
       <FlatList
+        style= {{borderWidth: 2, paddingLeft: 20}}
         data={items}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
         <View >
-        <Text>Country : {item.name}</Text>
+        <Text style ={{fontWeight: "bold"}}>Country : {item.name}</Text>
         <Text>Total Cases : {item.cases}</Text>
-        <Text>Deaths : {item.deaths}</Text>
+        <Text style= {{color: "red"}}>Deaths : {item.deaths}</Text>
         <Text></Text>
         </View>
         )
         }
       />
-      </View>: <Text>Loading</Text>}
+      </View>
+      </View>: <ActivityIndicator/>}
     </View>
     
   )
@@ -383,53 +541,256 @@ const Cont2 = () => {
   
 
   return(
-    <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
+    <View >
 
     {loading === false ?
       <View>
+
+      <View style = {{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+      <Text style = {{fontWeight: "bold", fontSize: 30, fontFamily: "serif", borderRadius: 10, borderColor: "black", borderWidth: 2, padding:5, backgroundColor: "grey"}}>Europe</Text>
+      </View>
+
+      <View style= {{padding: 5, backgroundColor: '#ffff'}}>
+
       <FlatList
+        style= {{borderWidth: 2, paddingLeft: 20}}
         data={items}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
         <View >
-        <Text>Country : {item.name}</Text>
+        <Text style ={{fontWeight: "bold"}}>Country : {item.name}</Text>
         <Text>Total Cases : {item.cases}</Text>
-        <Text>Deaths : {item.deaths}</Text>
+        <Text style= {{color: "red"}}>Deaths : {item.deaths}</Text>
         <Text></Text>
         </View>
         )
         }
       />
-      </View>: <Text>Loading</Text>}
+      </View>
+      </View>: <ActivityIndicator/>}
     </View>
     
   )
 }
 
 const Cont3 = () => {
-  return(
-    <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
-      <Text>Cont3</Text>
-    </View>
+  const [items, setItems] = useState();
+  const [loading , setLoading] = useState(true)
 
+  const fetchAPI = ()=> {
+    return fetch("https://covid19-update-api.herokuapp.com/api/v1/world/continent/africa")
+    .then((response) => response.json())
+    .then((result) => {
+      //console.log(result.countries)
+      setItems(result.countries)
+      setLoading(false)
+    }
+    )
+    .catch((error) => {
+      console.error(error);
+    });}
+
+    useEffect(() => {
+      fetchAPI();
+    },[])
+  
+
+  return(
+    <View >
+
+    {loading === false ?
+      <View>
+
+      <View style = {{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+      <Text style = {{fontWeight: "bold", fontSize: 30, fontFamily: "serif", borderRadius: 10, borderColor: "black", borderWidth: 2, padding:5, backgroundColor: "grey"}}>Africa</Text>
+      </View>
+
+      <View style= {{padding: 5, backgroundColor: '#ffff'}}>
+
+      <FlatList
+        style= {{borderWidth: 2, paddingLeft: 20}}
+        data={items}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+        <View >
+        <Text style ={{fontWeight: "bold"}}>Country : {item.name}</Text>
+        <Text>Total Cases : {item.cases}</Text>
+        <Text style= {{color: "red"}}>Deaths : {item.deaths}</Text>
+        <Text></Text>
+        </View>
+        )
+        }
+      />
+      </View>
+      </View>: <ActivityIndicator/>}
+    </View>
+    
   )
 }
 
-const Cont4 = () => {
-  return(
-    <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
-      <Text>Cont4</Text>
-    </View>
 
+const Cont4 = () => {
+  const [items, setItems] = useState();
+  const [loading , setLoading] = useState(true)
+
+  const fetchAPI = ()=> {
+    return fetch("https://covid19-update-api.herokuapp.com/api/v1/world/continent/north")
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result.countries)
+      setItems(result.countries)
+      setLoading(false)
+    }
+    )
+    .catch((error) => {
+      console.error(error);
+    });}
+
+    useEffect(() => {
+      fetchAPI();
+    },[])
+  
+
+  return(
+    <View >
+
+    {loading === false ?
+      <View>
+
+      <View style = {{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+      <Text style = {{fontWeight: "bold", fontSize: 30, fontFamily: "serif", borderRadius: 10, borderColor: "black", borderWidth: 2, padding:5, backgroundColor: "grey"}}>North America</Text>
+      </View>
+
+      <View style= {{padding: 5, backgroundColor: '#ffff'}}>
+
+      <FlatList
+        style= {{borderWidth: 2, paddingLeft: 20}}
+        data={items}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+        <View >
+        <Text style ={{fontWeight: "bold"}}>Country : {item.name}</Text>
+        <Text>Total Cases : {item.cases}</Text>
+        <Text style= {{color: "red"}}>Deaths : {item.deaths}</Text>
+        <Text></Text>
+        </View>
+        )
+        }
+      />
+      </View>
+      </View>: <ActivityIndicator/>}
+    </View>
+    
+  )
+}
+
+const Cont6 = () => {
+  const [items, setItems] = useState();
+  const [loading , setLoading] = useState(true)
+
+  const fetchAPI = ()=> {
+    return fetch("https://covid19-update-api.herokuapp.com/api/v1/world/continent/australia")
+    .then((response) => response.json())
+    .then((result) => {
+      //console.log(result.countries)
+      setItems(result.countries)
+      setLoading(false)
+    }
+    )
+    .catch((error) => {
+      console.error(error);
+    });}
+
+    useEffect(() => {
+      fetchAPI();
+    },[])
+  
+
+  return(
+    <View >
+
+    {loading === false ?
+      <View>
+
+      <View style = {{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+      <Text style = {{fontWeight: "bold", fontSize: 30, fontFamily: "serif", borderRadius: 10, borderColor: "black", borderWidth: 2, padding:5, backgroundColor: "grey"}}>Australia</Text>
+      </View>
+
+      <View style= {{padding: 5, backgroundColor: '#ffff'}}>
+
+      <FlatList
+        style= {{borderWidth: 2, paddingLeft: 20}}
+        data={items.sort(compareValues('name'))}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+        <View >
+        <Text style ={{fontWeight: "bold"}}>Country : {item.name}</Text>
+        <Text>Total Cases : {item.cases}</Text>
+        <Text style= {{color: "red"}}>Deaths : {item.deaths}</Text>
+        <Text></Text>
+        </View>
+        )
+        }
+      />
+      </View>
+      </View>: <ActivityIndicator/>}
+    </View>
+    
   )
 }
 
 const Cont5 = () => {
-  return(
-    <View style = {{ padding: 50,justifyContent: "center", alignItems: "center"}}>
-      <Text>Cont5</Text>
-    </View>
+  const [items, setItems] = useState();
+  const [loading , setLoading] = useState(true)
 
+  const fetchAPI = ()=> {
+    return fetch("https://covid19-update-api.herokuapp.com/api/v1/world/continent/south")
+    .then((response) => response.json())
+    .then((result) => {
+      //console.log(result.countries)
+      setItems(result.countries)
+      setLoading(false)
+    }
+    )
+    .catch((error) => {
+      console.error(error);
+    });}
+
+    useEffect(() => {
+      fetchAPI();
+    },[])
+  
+
+  return(
+    <View >
+
+    {loading === false ?
+      <View>
+
+      <View style = {{justifyContent: "center", alignItems: "center", backgroundColor: "#ffff"}}>
+      <Text style = {{fontWeight: "bold", fontSize: 30, fontFamily: "serif", borderRadius: 10, borderColor: "black", borderWidth: 2, padding:5, backgroundColor: "grey"}}>South America</Text>
+      </View>
+
+      <View style= {{padding: 5, backgroundColor: '#ffff'}}>
+
+      <FlatList
+        style= {{borderWidth: 2, paddingLeft: 20}}
+        data={items.sort(compareValues('name'))}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+        <View >
+        <Text style ={{fontWeight: "bold"}}>Country : {item.name}</Text>
+        <Text>Total Cases : {item.cases}</Text>
+        <Text style= {{color: "red"}}>Deaths : {item.deaths}</Text>
+        <Text></Text>
+        </View>
+        )
+        }
+      />
+      </View>
+      </View>: <ActivityIndicator/>}
+    </View>
+    
   )
 }
 
@@ -453,27 +814,24 @@ const styles = StyleSheet.create({
 const styles2 = StyleSheet.create({
  
   MainContainer: {
-    paddingTop: 50,
+    padding: 10,
     justifyContent: 'center',
-    flex: 1,
-    margin: 5,
-    minHeight: 800
+    backgroundColor: '#ffff',
  
   },
  
   row: {
-    fontSize: 18,
-    padding: 12
+    fontSize: 15,
+    padding: 15
   },
  
   textInput: {
  
     textAlign: 'center',
     height: 42,
-    borderWidth: 1,
-    borderColor: '#009688',
-    borderRadius: 8,
-    backgroundColor: "#FFFF"
- 
+    borderWidth: 2,
+    borderColor: '#6495ed',
+    borderRadius: 120,
+    backgroundColor: "#FFFF",
   }
 });
